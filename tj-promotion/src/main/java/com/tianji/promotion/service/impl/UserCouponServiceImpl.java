@@ -332,7 +332,7 @@ public class UserCouponServiceImpl extends ServiceImpl<UserCouponMapper, UserCou
         }
         // 2.转换规则
         return coupons.stream()
-                .map(c -> DiscountStrategy.getDiscount(c.getDiscountType()).getRule(c))
+                .map(c -> DiscountStrategy.getDiscount(c.getDiscountType(), c).getRule(c))
                 .collect(Collectors.toList());
     }
 

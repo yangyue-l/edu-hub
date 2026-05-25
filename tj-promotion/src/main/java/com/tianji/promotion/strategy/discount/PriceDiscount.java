@@ -10,23 +10,25 @@ public class PriceDiscount implements Discount{
 
     private static final String RULE_TEMPLATE = "满{}减{}";
 
+    private final Integer discountValue;
+    private final Integer thresholdAmount;
 
     @Override
     public boolean canUse(int totalAmount, Coupon coupon) {
-        return totalAmount >= coupon.getThresholdAmount();
+        return totalAmount >= thresholdAmount;
     }
 
     @Override
     public int calculateDiscount(int totalAmount, Coupon coupon) {
-        return coupon.getDiscountValue();
+        return discountValue;
     }
 
     @Override
     public String getRule(Coupon coupon) {
         return StringUtils.format(
                 RULE_TEMPLATE,
-                NumberUtils.scaleToStr(coupon.getThresholdAmount(), 2),
-                NumberUtils.scaleToStr(coupon.getDiscountValue(), 2)
+                NumberUtils.scaleToStr(thresholdAmount, 2),
+                NumberUtils.scaleToStr(discountValue, 2)
         );
     }
 }

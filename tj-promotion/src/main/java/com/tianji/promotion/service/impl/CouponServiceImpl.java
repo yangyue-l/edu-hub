@@ -304,4 +304,19 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, Coupon> impleme
             return null;
         });
     }
+
+    @Override
+    public void issueCouponByPage(int page, int size) {
+        // 1.分页查询待发放的优惠券（未开始且到达发放时间）
+        Page<Coupon> p = lambdaQuery()
+                .eq(Coupon::getStatus, UN_ISSUE)
+                .le(Coupon::getIssueBeginTime, LocalDateTime.now())
+                .page(new Page<>(page, size));
+        List<Coupon> records = p.getRecords();
+        if (CollUtils.isEmpty(records)) {
+            return;
+        }
+        // 2.批量发放
+        beginIssueBatch(records);
+    }
 }

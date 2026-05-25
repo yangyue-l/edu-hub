@@ -48,7 +48,7 @@ public class DiscountServiceImpl implements IDiscountService {
         int totalAmount = orderCourses.stream().mapToInt(OrderCourseDTO::getPrice).sum();
         // 2.2.筛选可用券
         List<Coupon> availableCoupons = coupons.stream()
-                .filter(c -> DiscountStrategy.getDiscount(c.getDiscountType()).canUse(totalAmount, c))
+                .filter(c -> DiscountStrategy.getDiscount(c.getDiscountType(), c).canUse(totalAmount, c))
                 .collect(Collectors.toList());
         if (CollUtils.isEmpty(availableCoupons)) {
             return CollUtils.emptyList();
@@ -159,7 +159,7 @@ public class DiscountServiceImpl implements IDiscountService {
             int totalAmount = availableCourses.stream()
                     .mapToInt(oc -> oc.getPrice() - detailMap.get(oc.getId())).sum();
             // 3.3.判断是否可用
-            Discount discount = DiscountStrategy.getDiscount(coupon.getDiscountType());
+            Discount discount = DiscountStrategy.getDiscount(coupon.getDiscountType(), coupon);
             if (!discount.canUse(totalAmount, coupon)) {
                 // 券不可用，跳过
                 continue;
@@ -220,7 +220,7 @@ public class DiscountServiceImpl implements IDiscountService {
             // 2.计算课程总价
             int totalAmount = availableCourses.stream().mapToInt(OrderCourseDTO::getPrice).sum();
             // 3.判断是否可用
-            Discount discount = DiscountStrategy.getDiscount(coupon.getDiscountType());
+            Discount discount = DiscountStrategy.getDiscount(coupon.getDiscountType(), coupon);
             if (discount.canUse(totalAmount, coupon)) {
                 map.put(coupon, availableCourses);
             }

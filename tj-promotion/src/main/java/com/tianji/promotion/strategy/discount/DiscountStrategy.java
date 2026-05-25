@@ -1,22 +1,10 @@
 package com.tianji.promotion.strategy.discount;
 
-import com.tianji.promotion.enums.DiscountType;
-
-import java.util.EnumMap;
+import com.tianji.promotion.domain.po.Coupon;
 
 public class DiscountStrategy {
 
-    private final static EnumMap<DiscountType, Discount> strategies;
-
-    static {
-        strategies = new EnumMap<>(DiscountType.class);
-        strategies.put(DiscountType.NO_THRESHOLD, new NoThresholdDiscount());
-        strategies.put(DiscountType.PER_PRICE_DISCOUNT, new PerPriceDiscount());
-        strategies.put(DiscountType.RATE_DISCOUNT, new RateDiscount());
-        strategies.put(DiscountType.PRICE_DISCOUNT, new PriceDiscount());
-    }
-
-    public static Discount getDiscount(DiscountType type) {
-        return strategies.get(type);
+    public static Discount getDiscount(com.tianji.promotion.enums.DiscountType type, Coupon coupon) {
+        return com.tianji.promotion.constants.DiscountType.of(type.getValue()).getDiscount(coupon);
     }
 }

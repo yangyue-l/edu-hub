@@ -10,24 +10,27 @@ public class RateDiscount implements Discount {
 
     private static final String RULE_TEMPLATE = "满{}打{}折，上限{}元";
 
+    private final Integer discountValue;
+    private final Integer thresholdAmount;
+    private final Integer maxDiscountAmount;
+
     @Override
     public boolean canUse(int totalAmount, Coupon coupon) {
-        return totalAmount >= coupon.getThresholdAmount();
+        return totalAmount >= thresholdAmount;
     }
 
     @Override
     public int calculateDiscount(int totalAmount,  Coupon coupon) {
-        // 计算折扣，扩大100倍计算，向下取整，单位是分
-        return Math.min(coupon.getMaxDiscountAmount(), totalAmount * (100 - coupon.getDiscountValue()) / 100);
+        return Math.min(maxDiscountAmount, totalAmount * (100 - discountValue) / 100);
     }
 
     @Override
     public String getRule( Coupon coupon) {
         return StringUtils.format(
                 RULE_TEMPLATE,
-                NumberUtils.scaleToStr(coupon.getThresholdAmount(), 2),
-                NumberUtils.scaleToStr(coupon.getDiscountValue(), 1),
-                NumberUtils.scaleToStr(coupon.getMaxDiscountAmount(), 2)
+                NumberUtils.scaleToStr(thresholdAmount, 2),
+                NumberUtils.scaleToStr(discountValue, 1),
+                NumberUtils.scaleToStr(maxDiscountAmount, 2)
         );
     }
 }

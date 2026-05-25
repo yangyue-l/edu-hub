@@ -10,29 +10,32 @@ public class PerPriceDiscount implements Discount {
 
     private final static String RULE_TEMPLATE = "每满{}减{}，上限{}";
 
+    private final Integer discountValue;
+    private final Integer thresholdAmount;
+    private final Integer maxDiscountAmount;
+
     @Override
     public boolean canUse(int totalAmount, Coupon coupon) {
-        return totalAmount >= coupon.getThresholdAmount();
+        return totalAmount >= thresholdAmount;
     }
 
     @Override
     public int calculateDiscount(int totalAmount, Coupon coupon) {
         int discount = 0;
-        Integer thresholdAmount = coupon.getThresholdAmount();
-        Integer discountValue = coupon.getDiscountValue();
-        while (totalAmount >= thresholdAmount) {
+        int remaining = totalAmount;
+        while (remaining >= thresholdAmount) {
             discount += discountValue;
-            totalAmount -= thresholdAmount;
+            remaining -= thresholdAmount;
         }
-        return Math.min(discount, coupon.getMaxDiscountAmount());
+        return Math.min(discount, maxDiscountAmount);
     }
 
     @Override
     public String getRule(Coupon coupon) {
         return StringUtils.format(
                 RULE_TEMPLATE,
-                NumberUtils.scaleToStr(coupon.getThresholdAmount(), 2),
-                NumberUtils.scaleToStr(coupon.getDiscountValue(), 2),
-                NumberUtils.scaleToStr(coupon.getMaxDiscountAmount(), 2));
+                NumberUtils.scaleToStr(thresholdAmount, 2),
+                NumberUtils.scaleToStr(discountValue, 2),
+                NumberUtils.scaleToStr(maxDiscountAmount, 2));
     }
 }
